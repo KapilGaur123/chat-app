@@ -2,9 +2,12 @@ import React from "react";
 import Message from "./Message";
 import GetMessages from "../../context/GetMessages.jsx";
 import Loading from "../../components/Loading.jsx";
+import UseConversation from "../../zustand/UseConversation.jsx";
 
 function Messages() {
   const { loading, messages } = GetMessages();
+  const {selectConversation} = UseConversation();
+  
 
   return (
     <>

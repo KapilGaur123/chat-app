@@ -3,7 +3,6 @@ import UseConversation from "../../zustand/UseConversation";
 
 function ChatUser() {
   const {selectConversation} = UseConversation();
-  console.log(selectConversation);
   
   return (
     <>
