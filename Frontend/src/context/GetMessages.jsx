@@ -21,7 +21,6 @@ function GetMessages() {
           );
 
           setMessages(response.data);
-          console.log(response.data);
           
           setLoading(false);
         } catch (error) {

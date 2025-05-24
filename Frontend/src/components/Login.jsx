@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useAuth } from "../context/authProvider";
 import { Link } from "react-router-dom";
+import toast from "react-hot-toast";
 
 function Login() {
   const [user, setUser] = useState({
@@ -50,16 +51,17 @@ function Login() {
       );
 
       // console.log(response.data);
-      alert("user logged IN !!!");
-      localStorage.setItem("ChatApp", JSON.stringify(response.data));
+      toast.success("User Log-in Successfully");
+      localStorage.setItem("ChatApp", JSON.stringify(response.data));      
+      sessionStorage.setItem("User",JSON.stringify(response.data));
       setAuthUser(response.data);
       
     } catch (error) {
-      console.log(error);
+      console.log("Error in login",error);
       if (error.status === 409) {
-        alert("Invalid user credential!");
+        toast.error("Invalid user credential!");
       } else if (error.status === 506) {
-        alert("Internal server error!");
+        toast.error("Internal server error!");
       }
     }
   };

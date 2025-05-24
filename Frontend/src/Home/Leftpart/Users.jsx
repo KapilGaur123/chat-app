@@ -6,7 +6,7 @@ function Users() {
   const [allUsers, loading] = GetAllUsers();
 
   // console.log(allUsers);
-  
+
   return (
     <>
       <div>
@@ -17,11 +17,9 @@ function Users() {
           className="py-2 scroll-container"
           style={{ maxHeight: "calc(91vh - 20vh)" }}
         >
-          {
-            allUsers.map((user, index) => (
-              <User key={index}  user={user}/>
-            ))
-          }
+          {allUsers.map((user, index) => (
+            <User key={index} user={user} />
+          ))}
         </div>
       </div>
     </>

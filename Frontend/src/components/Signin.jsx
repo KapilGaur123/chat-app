@@ -1,7 +1,8 @@
 import React, { useState } from "react";
-import axios from "axios"
+import axios from "axios";
 import { useAuth } from "../context/authProvider";
 import { Link } from "react-router-dom";
+import toast from "react-hot-toast";
 
 function Signin() {
   const [user, setUser] = useState({
@@ -10,64 +11,70 @@ function Signin() {
     password: "",
     confirmPassword: "",
   });
+
   const [errShow, setErrShow] = useState({});
-  const [runApi, setRunApi] = useState(false);
 
   const [authUser, setAuthUser] = useAuth();
 
   const handleChange = (event) => {
-    setUser({...user, [event.target.name] : event.target.value})
-  }
+    setUser({ ...user, [event.target.name]: event.target.value });
+  };
+
+  const validation = () => {
+    const newObj = {};
+
+    if (!user.fullname) newObj.fullname = "enter your name";
+    if (!user.email) newObj.email = "enter your email";
+    if (!user.password) newObj.password = "set your password";
+    if (!user.confirmPassword) {
+      newObj.confirmPassword = "Re-enter the password";
+    } else if (user.password !== user.confirmPassword) {
+      newObj.confirmPassword = "password do not match";
+    }
+
+    return newObj;
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const newErrObj = {};
+    const formValidation = validation();
 
-    if (user.fullname === "") {
-      newErrObj.fullname = "enter the username";
-    }
-    if(user.email === ""){
-      newErrObj.email = "enter the email";
-    }
-    if(user.password === ""){
-      newErrObj.password = "enter the password";
-    }
-    if(user.confirmPassword === ""){
-      newErrObj.confirmPassword = "re-enter the password";
-
-    }else if(user.confirmPassword !== user.password){
-      newErrObj.confirmPassword = "comfirm password is not match";
-    }else{
-      setRunApi(true);
+    if (Object.keys(formValidation).length > 0) {
+      setErrShow(formValidation);
+      return;
     }
 
-    setErrShow(newErrObj);
-
-    if(runApi){
+    try {
       const userInfo = {
         fullname: user.fullname,
         email: user.email,
         password: user.password,
-        confirmPassword: user.confirmPassword
-      }
+        confirmPassword: user.confirmPassword,
+      };
 
-      await axios.post("http://localhost:3000/user/signin", userInfo, {
-        withCredentials: true
-      })
-      .then((response) => {
-        // console.log(response.data.createdUser);
-        alert("success!!!")
-        localStorage.setItem("ChatApp",JSON.stringify(response.data))
-        setAuthUser(response.data)
-      })
-      .catch( (error) => {
-        console.log(error);
-        if(error.status === 405){
-          alert("user exist already!")
+      const response = await axios.post(
+        "http://localhost:3000/user/signin",
+        userInfo,
+        {
+          withCredentials: true,
         }
-      } )
-    }
+      );
 
+      if (response.data?.createdUser?.id) {
+        toast.success("Account create successfully!");
+        sessionStorage.setItem("User", JSON.stringify(response.data.createdUser));
+        localStorage.setItem("ChatApp", JSON.stringify(response.data.createdUser));
+        setAuthUser(response.data);
+      } else {
+        throw new Error("Invalid response from server.");
+      }
+    } catch (error) {
+      if (error.status === 405) {
+        toast.error("user exist already!");
+      }else if(error.sta === 503){
+        toast.error("Server side error");
+      }
+    }
   };
 
   return (
@@ -102,7 +109,7 @@ function Signin() {
               />
             </label>
           </div>
-          <span className="text-red-600">{errShow.username}</span>
+          <span className="text-red-600">{errShow.fullname}</span>
           <div className="border border-white rounded-md">
             <label className="input input-bordered flex items-center gap-2 text-gray-400 bg-[#0F172A]">
               <svg
@@ -178,7 +185,10 @@ function Signin() {
           <div className="flex justify-between">
             <p>
               have an acount?{" "}
-              <Link to="/login" className="text-blue-600 cursor-pointer underline">
+              <Link
+                to="/login"
+                className="text-blue-600 cursor-pointer underline"
+              >
                 Login
               </Link>
             </p>

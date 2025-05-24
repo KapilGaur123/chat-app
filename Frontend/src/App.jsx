@@ -5,10 +5,11 @@ import Signin from "./components/Signin";
 import Login from "./components/Login";
 import { useAuth } from "./context/authProvider";
 import { Navigate, Route, Routes } from "react-router-dom";
-import Loading from "./components/Loading";
+import { Toaster } from "react-hot-toast";
 
 function App() {
   const [authUser, setAuthUser] = useAuth();
+  // console.log(authUser);
   return (
     <>
       <Routes>
@@ -34,6 +35,7 @@ function App() {
           element={authUser ? <Navigate to={"/"} /> : <Signin />}
         />
       </Routes>
+      <Toaster />
     </>
   );
 }

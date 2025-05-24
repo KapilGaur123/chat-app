@@ -5,9 +5,9 @@ const UseConversation = create((set, get) => ({
   messages: [],
 
   setSelectConversation : (newConversation) => {
-    const {selectConversation} = get();
+    // const {selectConversation} = get();
 
-    if(selectConversation !== newConversation){
+    if(get().selectConversation !== newConversation){
       set({selectConversation: newConversation, messages: []})
     }else{
       set({selectConversation: newConversation})

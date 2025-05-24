@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import cookies from "js-cookie";
+
 
 const GetAllUsers = () => {
   const [allUsers, setAllUsers] = useState([]);

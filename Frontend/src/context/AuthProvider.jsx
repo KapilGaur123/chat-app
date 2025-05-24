@@ -1,11 +1,15 @@
 import React, { createContext, useContext, useState } from "react";
-import cookies from "js-cookie";
+import Cookies from "js-cookie";
 
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
+  const initialUserState = 
+  Cookies.get("token")
+  || sessionStorage.getItem("User")
+  || null; 
 
-  const initialUserState = localStorage.getItem("ChatApp") || cookies.get("token");
+  // console.log(initialUserState)
   
   const [authUser, setAuthUser] = useState(
     initialUserState ? JSON.parse(initialUserState) : undefined
